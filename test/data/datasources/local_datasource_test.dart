@@ -1,7 +1,7 @@
 import 'package:asset_flow/data/datasources/local_datasource.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../sample.dart';
+import '../../get_sample_json.dart';
 
 const path = 'assets/api_data.json';
 

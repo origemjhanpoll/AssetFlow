@@ -7,7 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 
-import '../../sample.dart';
+import '../../get_sample_json.dart';
 import 'assets_repository_test.mocks.dart';
 
 @GenerateMocks([ApiDataSource])
