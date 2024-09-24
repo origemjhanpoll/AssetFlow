@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'package:flutter/services.dart' show rootBundle;
+import 'dart:io';
 
 class ApiDataSource {
   Future<Map<String, dynamic>> getApiData() async {
-    final String response = await rootBundle.loadString('assets/api_data.json');
+    final String response = await File('assets/api_data.json').readAsString();
     final data = json.decode(response);
     return data;
   }
