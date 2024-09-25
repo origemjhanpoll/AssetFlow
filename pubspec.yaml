@@ -76,6 +76,7 @@ flutter:
     - assets/asset.svg
     - assets/location.svg
     - assets/component.svg
+    - assets/logo_tractian.svg
     - assets/api_data.json
 
   # An image asset can refer to one or more resolution-specific "variants", see

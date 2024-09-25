@@ -1,8 +1,8 @@
 import 'package:asset_flow/domain/entities/company.dart';
-import 'package:asset_flow/domain/repositories/i_company_repository.dart';
+import 'package:asset_flow/domain/repositories/i_assets_repository.dart';
 
 class GetCompanies {
-  final ICompanyRepository repository;
+  final IAssetsRepository repository;
 
   GetCompanies(this.repository);
 

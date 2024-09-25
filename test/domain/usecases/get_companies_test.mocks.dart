@@ -5,9 +5,10 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i3;
 
+import 'package:asset_flow/domain/entities/asset.dart' as _i6;
 import 'package:asset_flow/domain/entities/company.dart' as _i4;
-import 'package:asset_flow/domain/repositories/i_company_repository.dart'
-    as _i2;
+import 'package:asset_flow/domain/entities/location.dart' as _i5;
+import 'package:asset_flow/domain/repositories/i_assets_repository.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -23,12 +24,11 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-/// A class which mocks [ICompanyRepository].
+/// A class which mocks [IAssetsRepository].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockICompanyRepository extends _i1.Mock
-    implements _i2.ICompanyRepository {
-  MockICompanyRepository() {
+class MockIAssetsRepository extends _i1.Mock implements _i2.IAssetsRepository {
+  MockIAssetsRepository() {
     _i1.throwOnMissingStub(this);
   }
 
@@ -40,4 +40,26 @@ class MockICompanyRepository extends _i1.Mock
         ),
         returnValue: _i3.Future<List<_i4.Company>>.value(<_i4.Company>[]),
       ) as _i3.Future<List<_i4.Company>>);
+
+  @override
+  _i3.Future<List<_i5.Location>> getLocations({required String? companyId}) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getLocations,
+          [],
+          {#companyId: companyId},
+        ),
+        returnValue: _i3.Future<List<_i5.Location>>.value(<_i5.Location>[]),
+      ) as _i3.Future<List<_i5.Location>>);
+
+  @override
+  _i3.Future<List<_i6.Asset>> getAssets({required String? companyId}) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #getAssets,
+          [],
+          {#companyId: companyId},
+        ),
+        returnValue: _i3.Future<List<_i6.Asset>>.value(<_i6.Asset>[]),
+      ) as _i3.Future<List<_i6.Asset>>);
 }

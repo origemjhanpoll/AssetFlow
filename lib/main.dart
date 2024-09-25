@@ -18,8 +18,8 @@ class MyApp extends StatelessWidget {
       title: 'Asset Flow',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          primary: const Color(0xFF2563EB),
-          seedColor: const Color(0xFF2563EB),
+          primary: const Color(0xFF0F75E3),
+          seedColor: const Color(0xFF0F75E3),
         ),
         useMaterial3: true,
       ),

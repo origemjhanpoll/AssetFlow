@@ -5,10 +5,13 @@
 // ignore_for_file: no_leading_underscores_for_library_prefixes
 import 'dart:async' as _i4;
 
+import 'package:asset_flow/domain/entities/asset.dart' as _i9;
 import 'package:asset_flow/domain/entities/company.dart' as _i5;
-import 'package:asset_flow/domain/repositories/i_company_repository.dart'
-    as _i2;
+import 'package:asset_flow/domain/entities/location.dart' as _i7;
+import 'package:asset_flow/domain/repositories/i_assets_repository.dart' as _i2;
+import 'package:asset_flow/domain/usecases/get_assets.dart' as _i8;
 import 'package:asset_flow/domain/usecases/get_companies.dart' as _i3;
+import 'package:asset_flow/domain/usecases/get_locations.dart' as _i6;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -24,9 +27,9 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeICompanyRepository_0 extends _i1.SmartFake
-    implements _i2.ICompanyRepository {
-  _FakeICompanyRepository_0(
+class _FakeIAssetsRepository_0 extends _i1.SmartFake
+    implements _i2.IAssetsRepository {
+  _FakeIAssetsRepository_0(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -44,13 +47,13 @@ class MockGetCompanies extends _i1.Mock implements _i3.GetCompanies {
   }
 
   @override
-  _i2.ICompanyRepository get repository => (super.noSuchMethod(
+  _i2.IAssetsRepository get repository => (super.noSuchMethod(
         Invocation.getter(#repository),
-        returnValue: _FakeICompanyRepository_0(
+        returnValue: _FakeIAssetsRepository_0(
           this,
           Invocation.getter(#repository),
         ),
-      ) as _i2.ICompanyRepository);
+      ) as _i2.IAssetsRepository);
 
   @override
   _i4.Future<List<_i5.Company>> call() => (super.noSuchMethod(
@@ -60,4 +63,62 @@ class MockGetCompanies extends _i1.Mock implements _i3.GetCompanies {
         ),
         returnValue: _i4.Future<List<_i5.Company>>.value(<_i5.Company>[]),
       ) as _i4.Future<List<_i5.Company>>);
+}
+
+/// A class which mocks [GetLocations].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockGetLocations extends _i1.Mock implements _i6.GetLocations {
+  MockGetLocations() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i2.IAssetsRepository get repository => (super.noSuchMethod(
+        Invocation.getter(#repository),
+        returnValue: _FakeIAssetsRepository_0(
+          this,
+          Invocation.getter(#repository),
+        ),
+      ) as _i2.IAssetsRepository);
+
+  @override
+  _i4.Future<List<_i7.Location>> call({required String? companyId}) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #call,
+          [],
+          {#companyId: companyId},
+        ),
+        returnValue: _i4.Future<List<_i7.Location>>.value(<_i7.Location>[]),
+      ) as _i4.Future<List<_i7.Location>>);
+}
+
+/// A class which mocks [GetAssets].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockGetAssets extends _i1.Mock implements _i8.GetAssets {
+  MockGetAssets() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i2.IAssetsRepository get repository => (super.noSuchMethod(
+        Invocation.getter(#repository),
+        returnValue: _FakeIAssetsRepository_0(
+          this,
+          Invocation.getter(#repository),
+        ),
+      ) as _i2.IAssetsRepository);
+
+  @override
+  _i4.Future<List<_i9.Asset>> call({required String? companyId}) =>
+      (super.noSuchMethod(
+        Invocation.method(
+          #call,
+          [],
+          {#companyId: companyId},
+        ),
+        returnValue: _i4.Future<List<_i9.Asset>>.value(<_i9.Asset>[]),
+      ) as _i4.Future<List<_i9.Asset>>);
 }

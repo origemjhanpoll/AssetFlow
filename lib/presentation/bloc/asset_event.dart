@@ -7,4 +7,8 @@ sealed class AssetEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class GetCompaniesEvent extends AssetEvent {}
+final class GetCompaniesEvent extends AssetEvent {}
+
+final class GetLocationsEvent extends AssetEvent {}
+
+final class GetAssetsEvent extends AssetEvent {}

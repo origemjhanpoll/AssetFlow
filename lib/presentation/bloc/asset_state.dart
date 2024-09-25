@@ -7,12 +7,30 @@ sealed class AssetState extends Equatable {
   List<Object> get props => [];
 }
 
-class AssetInitial extends AssetState {}
+final class AssetInitial extends AssetState {}
 
-class Companies extends AssetState {
+final class Loading extends AssetState {}
+
+final class AssetCompanies extends AssetState {
   final List<Company> companies;
-  const Companies({required this.companies});
+  const AssetCompanies({required this.companies});
 
   @override
   List<Object> get props => [companies];
+}
+
+final class AssetLocations extends AssetState {
+  final List<Location> locations;
+  const AssetLocations({required this.locations});
+
+  @override
+  List<Object> get props => [locations];
+}
+
+final class AssetLoaded extends AssetState {
+  final List<Asset> assets;
+  const AssetLoaded({required this.assets});
+
+  @override
+  List<Object> get props => [assets];
 }
