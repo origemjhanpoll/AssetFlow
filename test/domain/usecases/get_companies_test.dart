@@ -18,8 +18,8 @@ void main() {
   });
   test('should return list of companies from the repository', () async {
     final companyList = [
-      Company(id: '662fd0fab3fd5656edb39af5', name: 'Tobias'),
-      Company(id: '662fd0ee639069143a8fc387', name: 'Jaguar'),
+      const Company(id: '662fd0fab3fd5656edb39af5', name: 'Tobias'),
+      const Company(id: '662fd0ee639069143a8fc387', name: 'Jaguar'),
     ];
     when(mockRepository.getCompanies()).thenAnswer((_) async => companyList);
 

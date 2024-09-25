@@ -1,8 +1,10 @@
-class Company {
+import 'package:equatable/equatable.dart';
+
+class Company extends Equatable {
   final String id;
   final String name;
 
-  Company({required this.id, required this.name});
+  const Company({required this.id, required this.name});
 
   factory Company.fromJson(Map<String, dynamic> json) {
     return Company(
@@ -17,4 +19,7 @@ class Company {
       'name': name,
     };
   }
+
+  @override
+  List<Object?> get props => [id, name];
 }
