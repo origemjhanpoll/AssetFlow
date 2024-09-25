@@ -16,7 +16,7 @@ class _CompaniesPageState extends State<CompaniesPage> {
   @override
   void initState() {
     bloc = di<AssetBloc>();
-    bloc.add(GetAssetsEvent());
+    bloc.add(GetCompaniesEvent());
     super.initState();
   }
 
@@ -26,10 +26,7 @@ class _CompaniesPageState extends State<CompaniesPage> {
       body: BlocBuilder<AssetBloc, AssetState>(
         bloc: bloc,
         buildWhen: (previous, current) =>
-            current is Loading ||
-            current is AssetCompanies ||
-            current is AssetLocations ||
-            current is AssetLoaded,
+            current is Loading || current is AssetCompanies,
         builder: (context, state) {
           if (state is Loading) {
             return const Center(
@@ -43,26 +40,6 @@ class _CompaniesPageState extends State<CompaniesPage> {
                 final company = companies[index];
                 return ListTile(
                     title: Text(company.name), subtitle: Text(company.id));
-              },
-            );
-          } else if (state is AssetLocations) {
-            final locations = state.locations;
-            return ListView.builder(
-              itemCount: locations.length,
-              itemBuilder: (context, index) {
-                final location = locations[index];
-                return ListTile(
-                    title: Text(location.name), subtitle: Text(location.id));
-              },
-            );
-          } else if (state is AssetLoaded) {
-            final assets = state.assets;
-            return ListView.builder(
-              itemCount: assets.length,
-              itemBuilder: (context, index) {
-                final asset = assets[index];
-                return ListTile(
-                    title: Text(asset.name), subtitle: Text(asset.id));
               },
             );
           }
