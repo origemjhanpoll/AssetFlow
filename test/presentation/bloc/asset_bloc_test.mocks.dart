@@ -56,10 +56,11 @@ class MockGetCompanies extends _i1.Mock implements _i3.GetCompanies {
       ) as _i2.IAssetsRepository);
 
   @override
-  _i4.Future<List<_i5.Company>> call() => (super.noSuchMethod(
+  _i4.Future<List<_i5.Company>> call({int? assetCount}) => (super.noSuchMethod(
         Invocation.method(
           #call,
           [],
+          {#assetCount: assetCount},
         ),
         returnValue: _i4.Future<List<_i5.Company>>.value(<_i5.Company>[]),
       ) as _i4.Future<List<_i5.Company>>);

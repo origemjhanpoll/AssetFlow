@@ -3,9 +3,9 @@ import 'package:equatable/equatable.dart';
 class Company extends Equatable {
   final String id;
   final String name;
-  final int? assets;
+  final int? assetCount;
 
-  const Company({required this.id, required this.name, this.assets});
+  const Company({required this.id, required this.name, this.assetCount});
 
   factory Company.fromJson(Map<String, dynamic> json) {
     return Company(
@@ -24,15 +24,15 @@ class Company extends Equatable {
   Company copyWith({
     String? id,
     String? name,
-    int? assets,
+    int? assetCount,
   }) {
     return Company(
       id: id ?? this.id,
       name: name ?? this.name,
-      assets: assets ?? this.assets,
+      assetCount: assetCount ?? this.assetCount,
     );
   }
 
   @override
-  List<Object?> get props => [id, name, assets];
+  List<Object?> get props => [id, name, assetCount];
 }
