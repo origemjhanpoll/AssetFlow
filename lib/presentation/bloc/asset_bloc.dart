@@ -32,8 +32,9 @@ class AssetBloc extends Bloc<AssetEvent, AssetState> {
     try {
       final companies = await getCompanies();
       emit(AssetCompanies(companies: companies));
-    } catch (e) {
-      debugPrint(e.toString());
+    } catch (e, s) {
+      debugPrint('Erro: $e');
+      debugPrint('Stack trace: $s');
     }
   }
 
@@ -44,8 +45,9 @@ class AssetBloc extends Bloc<AssetEvent, AssetState> {
       final locations =
           await getLocations(companyId: '662fd0ee639069143a8fc387');
       emit(AssetLocations(locations: locations));
-    } catch (e) {
-      debugPrint(e.toString());
+    } catch (e, s) {
+      debugPrint('Erro: $e');
+      debugPrint('Stack trace: $s');
     }
   }
 

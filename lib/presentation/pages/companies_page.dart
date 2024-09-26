@@ -23,6 +23,12 @@ class _CompaniesPageState extends State<CompaniesPage> {
   }
 
   @override
+  void dispose() {
+    bloc.close();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
