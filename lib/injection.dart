@@ -1,6 +1,7 @@
 import 'package:asset_flow/data/datasources/remote_datasource.dart';
 import 'package:asset_flow/data/repositories/assets_repository.dart';
 import 'package:asset_flow/domain/repositories/i_assets_repository.dart';
+import 'package:asset_flow/domain/usecases/fetch_assets.dart';
 import 'package:asset_flow/domain/usecases/get_assets.dart';
 import 'package:asset_flow/domain/usecases/get_companies.dart';
 import 'package:asset_flow/domain/usecases/get_locations.dart';
@@ -20,9 +21,14 @@ Future<void> init() async {
   di.registerLazySingleton(() => GetCompanies(di<IAssetsRepository>()));
   di.registerLazySingleton(() => GetLocations(di<IAssetsRepository>()));
   di.registerLazySingleton(() => GetAssets(di<IAssetsRepository>()));
+  di.registerLazySingleton(() => FetchAssets(di<IAssetsRepository>()));
 
-  di.registerFactory<AssetBloc>(() => AssetBloc(
+  di.registerFactory<AssetBloc>(
+    () => AssetBloc(
       getCompanies: di<GetCompanies>(),
       getLocations: di<GetLocations>(),
-      getAssets: di<GetAssets>()));
+      getAssets: di<GetAssets>(),
+      fetchAssets: di<FetchAssets>(),
+    ),
+  );
 }

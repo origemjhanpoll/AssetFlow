@@ -77,8 +77,10 @@ class _CompaniesPageState extends State<CompaniesPage> {
                         return ListTile(
                           onTap: () {
                             Navigator.of(context).push(MaterialPageRoute<void>(
-                                builder: (BuildContext context) =>
-                                    const AssetsPage()));
+                                builder: (BuildContext context) => AssetsPage(
+                                      companyId: company.id,
+                                      companyName: company.name,
+                                    )));
                           },
                           title: Text(company.name,
                               style: theme.textTheme.titleMedium),

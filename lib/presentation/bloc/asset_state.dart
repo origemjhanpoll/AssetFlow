@@ -27,9 +27,9 @@ final class AssetLocations extends AssetState {
   List<Object> get props => [locations];
 }
 
-final class AssetLoaded extends AssetState {
+final class AssetsLoaded extends AssetState {
   final List<Asset> assets;
-  const AssetLoaded({required this.assets});
+  const AssetsLoaded({required this.assets});
 
   @override
   List<Object> get props => [assets];

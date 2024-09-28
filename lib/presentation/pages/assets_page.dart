@@ -4,7 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AssetsPage extends StatefulWidget {
-  const AssetsPage({super.key});
+  final String companyId;
+  final String companyName;
+  const AssetsPage(
+      {super.key, required this.companyId, required this.companyName});
 
   @override
   State<AssetsPage> createState() => _AssetsPageState();
@@ -18,19 +21,20 @@ class _AssetsPageState extends State<AssetsPage> {
   @override
   void initState() {
     bloc = di<AssetBloc>();
-    focusNode = FocusNode()
-      ..addListener(() {
-        if (focusNode.hasFocus) {
-          setState(() {
-            hiddenAppBar = true;
-          });
-        } else {
-          setState(() {
-            hiddenAppBar = false;
-          });
-        }
-      });
-    bloc.add(GetAssetsEvent());
+    focusNode = FocusNode();
+
+    bloc.add(AssetsLoadedEvent(companyId: widget.companyId));
+    focusNode.addListener(() {
+      if (focusNode.hasFocus) {
+        setState(() {
+          hiddenAppBar = true;
+        });
+      } else {
+        setState(() {
+          hiddenAppBar = false;
+        });
+      }
+    });
     super.initState();
   }
 
@@ -53,7 +57,7 @@ class _AssetsPageState extends State<AssetsPage> {
               duration: const Duration(milliseconds: 250),
               height: hiddenAppBar ? 50 : 160,
               child: AppBar(
-                title: const Text('Ativos'),
+                title: Text('${widget.companyName} - Ativos'),
                 forceMaterialTransparency: hiddenAppBar ? true : false,
                 foregroundColor: theme.colorScheme.onPrimary,
                 backgroundColor: hiddenAppBar ? null : theme.primaryColor,
@@ -65,7 +69,7 @@ class _AssetsPageState extends State<AssetsPage> {
             child: Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16, 8.0),
+                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
                   child: SearchBar(
                     focusNode: focusNode,
                     leading: const Icon(Icons.search),
@@ -93,13 +97,13 @@ class _AssetsPageState extends State<AssetsPage> {
                 BlocBuilder<AssetBloc, AssetState>(
                   bloc: bloc,
                   buildWhen: (previous, current) =>
-                      current is Loading || current is AssetLoaded,
+                      current is Loading || current is AssetsLoaded,
                   builder: (context, state) {
                     if (state is Loading) {
                       return const Center(
                         child: CircularProgressIndicator(),
                       );
-                    } else if (state is AssetLoaded) {
+                    } else if (state is AssetsLoaded) {
                       final assets = state.assets;
                       return Expanded(
                         child: ListView.builder(
