@@ -9,7 +9,8 @@ import 'package:asset_flow/domain/entities/asset.dart' as _i9;
 import 'package:asset_flow/domain/entities/company.dart' as _i5;
 import 'package:asset_flow/domain/entities/location.dart' as _i7;
 import 'package:asset_flow/domain/repositories/i_assets_repository.dart' as _i2;
-import 'package:asset_flow/domain/usecases/get_assets.dart' as _i8;
+import 'package:asset_flow/domain/usecases/filter_asset_and_location.dart'
+    as _i8;
 import 'package:asset_flow/domain/usecases/get_companies.dart' as _i3;
 import 'package:asset_flow/domain/usecases/get_locations.dart' as _i6;
 import 'package:mockito/mockito.dart' as _i1;
@@ -56,11 +57,10 @@ class MockGetCompanies extends _i1.Mock implements _i3.GetCompanies {
       ) as _i2.IAssetsRepository);
 
   @override
-  _i4.Future<List<_i5.Company>> call({int? assetCount}) => (super.noSuchMethod(
+  _i4.Future<List<_i5.Company>> call() => (super.noSuchMethod(
         Invocation.method(
           #call,
           [],
-          {#assetCount: assetCount},
         ),
         returnValue: _i4.Future<List<_i5.Company>>.value(<_i5.Company>[]),
       ) as _i4.Future<List<_i5.Company>>);
@@ -95,11 +95,12 @@ class MockGetLocations extends _i1.Mock implements _i6.GetLocations {
       ) as _i4.Future<List<_i7.Location>>);
 }
 
-/// A class which mocks [GetAssets].
+/// A class which mocks [FilterAssetAndLocation].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockGetAssets extends _i1.Mock implements _i8.GetAssets {
-  MockGetAssets() {
+class MockFilterAssetAndLocation extends _i1.Mock
+    implements _i8.FilterAssetAndLocation {
+  MockFilterAssetAndLocation() {
     _i1.throwOnMissingStub(this);
   }
 

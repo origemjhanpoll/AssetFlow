@@ -9,10 +9,6 @@ sealed class AssetEvent extends Equatable {
 
 final class GetCompaniesEvent extends AssetEvent {}
 
-final class GetLocationsEvent extends AssetEvent {}
-
-final class GetAssetsEvent extends AssetEvent {}
-
 final class AssetsLoadedEvent extends AssetEvent {
   final String companyId;
   const AssetsLoadedEvent({required this.companyId});

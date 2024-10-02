@@ -11,26 +11,18 @@ final class AssetInitial extends AssetState {}
 
 final class Loading extends AssetState {}
 
-final class AssetCompanies extends AssetState {
+final class CompaniesLoaded extends AssetState {
   final List<Company> companies;
-  const AssetCompanies({required this.companies});
+  const CompaniesLoaded({required this.companies});
 
   @override
   List<Object> get props => [companies];
 }
 
-final class AssetLocations extends AssetState {
+final class AssetsLoaded extends AssetState {
   final List<Location> locations;
-  const AssetLocations({required this.locations});
+  const AssetsLoaded({required this.locations});
 
   @override
   List<Object> get props => [locations];
-}
-
-final class AssetsLoaded extends AssetState {
-  final List<Asset> assets;
-  const AssetsLoaded({required this.assets});
-
-  @override
-  List<Object> get props => [assets];
 }

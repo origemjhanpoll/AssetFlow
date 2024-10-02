@@ -60,13 +60,13 @@ class _CompaniesPageState extends State<CompaniesPage> {
             BlocBuilder<AssetBloc, AssetState>(
               bloc: bloc,
               buildWhen: (previous, current) =>
-                  current is Loading || current is AssetCompanies,
+                  current is Loading || current is CompaniesLoaded,
               builder: (context, state) {
                 if (state is Loading) {
                   return const Center(
                     child: CircularProgressIndicator(),
                   );
-                } else if (state is AssetCompanies) {
+                } else if (state is CompaniesLoaded) {
                   final companies = state.companies;
                   return Expanded(
                     child: ListView.builder(

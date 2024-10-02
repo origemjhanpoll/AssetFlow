@@ -1,5 +1,5 @@
 import 'package:asset_flow/domain/entities/company.dart';
-import 'package:asset_flow/domain/usecases/get_assets.dart';
+import 'package:asset_flow/domain/usecases/filter_asset_and_location.dart';
 import 'package:asset_flow/domain/usecases/get_companies.dart';
 import 'package:asset_flow/domain/usecases/get_locations.dart';
 import 'package:asset_flow/presentation/bloc/asset_bloc.dart';
@@ -10,22 +10,22 @@ import 'package:mockito/mockito.dart';
 
 import 'asset_bloc_test.mocks.dart';
 
-@GenerateMocks([GetCompanies, GetLocations, GetAssets])
+@GenerateMocks([GetCompanies, GetLocations, FilterAssetAndLocation])
 void main() {
   late AssetBloc assetBloc;
   late MockGetCompanies mockGetCompanies;
   late MockGetLocations mockGetLocations;
-  late MockGetAssets mockGetAssets;
+  late MockFilterAssetAndLocation mockFilterAssetAndLocation;
 
   setUp(() {
     mockGetCompanies = MockGetCompanies();
     mockGetLocations = MockGetLocations();
-    mockGetAssets = MockGetAssets();
+    mockFilterAssetAndLocation = MockFilterAssetAndLocation();
 
     assetBloc = AssetBloc(
       getCompanies: mockGetCompanies,
       getLocations: mockGetLocations,
-      getAssets: mockGetAssets,
+      filterAssetAndLocation: mockFilterAssetAndLocation,
     );
   });
 
@@ -41,7 +41,7 @@ void main() {
     },
     act: (bloc) => bloc.add(GetCompaniesEvent()),
     expect: () => [
-      const AssetCompanies(companies: []),
+      const CompaniesLoaded(companies: []),
     ],
   );
 
@@ -56,7 +56,7 @@ void main() {
     },
     act: (bloc) => bloc.add(GetCompaniesEvent()),
     expect: () => [
-      const AssetCompanies(companies: [
+      const CompaniesLoaded(companies: [
         Company(id: '662fd0fab3fd5656edb39af5', name: 'Tobias'),
         Company(id: '662fd0ee639069143a8fc387', name: 'Jaguar'),
       ]),

@@ -104,16 +104,28 @@ class _AssetsPageState extends State<AssetsPage> {
                         child: CircularProgressIndicator(),
                       );
                     } else if (state is AssetsLoaded) {
-                      final assets = state.assets;
+                      final locations = state.locations;
                       return Expanded(
                         child: ListView.builder(
-                          itemCount: assets.length,
+                          itemCount: locations.length,
                           itemBuilder: (context, index) {
-                            final asset = assets[index];
+                            final location = locations[index];
 
                             return ListTile(
-                              title: Text(asset.name,
+                              title: Text(location.name,
                                   style: theme.textTheme.titleMedium),
+                              subtitle: location.subLocations != null ||
+                                      location.assets != null
+                                  ? Column(children: [
+                                      if (location.subLocations != null)
+                                        ...location.subLocations!
+                                            .map((subLocation) {
+                                          return ListTile(
+                                            title: Text(subLocation.name),
+                                          );
+                                        }),
+                                    ])
+                                  : null,
                             );
                           },
                         ),
