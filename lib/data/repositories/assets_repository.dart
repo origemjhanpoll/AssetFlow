@@ -1,7 +1,6 @@
 import 'package:asset_flow/data/datasources/remote_datasource.dart';
-import 'package:asset_flow/domain/entities/asset.dart';
+import 'package:asset_flow/domain/entities/branch.dart';
 import 'package:asset_flow/domain/entities/company.dart';
-import 'package:asset_flow/domain/entities/location.dart';
 import 'package:asset_flow/domain/repositories/i_assets_repository.dart';
 
 class AssetsRepository implements IAssetsRepository {
@@ -18,16 +17,16 @@ class AssetsRepository implements IAssetsRepository {
   }
 
   @override
-  Future<List<Asset>> getAssets({required String companyId}) async {
+  Future<List<Branch>> getAssets({required String companyId}) async {
     final data = await remote.getData();
     final List assetsJson = data[companyId]['assets'];
-    return assetsJson.map((json) => Asset.fromJson(json)).toList();
+    return assetsJson.map((json) => Branch.fromJson(json)).toList();
   }
 
   @override
-  Future<List<Location>> getLocations({required String companyId}) async {
+  Future<List<Branch>> getLocations({required String companyId}) async {
     final data = await remote.getData();
     final List locationsJson = data[companyId]['locations'];
-    return locationsJson.map((json) => Location.fromJson(json)).toList();
+    return locationsJson.map((json) => Branch.fromJson(json)).toList();
   }
 }

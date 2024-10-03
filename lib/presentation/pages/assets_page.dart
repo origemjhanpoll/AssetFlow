@@ -1,5 +1,6 @@
 import 'package:asset_flow/injection.dart';
-import 'package:asset_flow/presentation/bloc/asset_bloc.dart';
+import 'package:asset_flow/presentation/bloc/tree_bloc.dart';
+import 'package:asset_flow/presentation/widgets/branch_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -14,27 +15,14 @@ class AssetsPage extends StatefulWidget {
 }
 
 class _AssetsPageState extends State<AssetsPage> {
-  late AssetBloc bloc;
-  late FocusNode focusNode;
-  var hiddenAppBar = false;
+  late TreeBloc bloc;
+  bool energySensorSelected = false;
+  bool criticSelected = false;
 
   @override
   void initState() {
-    bloc = di<AssetBloc>();
-    focusNode = FocusNode();
-
-    bloc.add(AssetsLoadedEvent(companyId: widget.companyId));
-    focusNode.addListener(() {
-      if (focusNode.hasFocus) {
-        setState(() {
-          hiddenAppBar = true;
-        });
-      } else {
-        setState(() {
-          hiddenAppBar = false;
-        });
-      }
-    });
+    bloc = di<TreeBloc>();
+    bloc.add(TreeLoadedEvent(companyId: widget.companyId));
     super.initState();
   }
 
@@ -48,95 +36,90 @@ class _AssetsPageState extends State<AssetsPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return GestureDetector(
-      onTap: focusNode.unfocus,
-      child: Scaffold(
-          appBar: PreferredSize(
-            preferredSize: const Size.fromHeight(60),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 250),
-              height: hiddenAppBar ? 50 : 160,
-              child: AppBar(
-                title: Text('${widget.companyName} - Ativos'),
-                forceMaterialTransparency: hiddenAppBar ? true : false,
-                foregroundColor: theme.colorScheme.onPrimary,
-                backgroundColor: hiddenAppBar ? null : theme.primaryColor,
-              ),
-            ),
-          ),
-          body: SafeArea(
-            bottom: false,
-            child: Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 8.0),
-                  child: SearchBar(
-                    focusNode: focusNode,
-                    leading: const Icon(Icons.search),
-                    hintText: 'Buscar Ativo ou Local',
-                    textInputAction: TextInputAction.search,
-                    elevation: const WidgetStatePropertyAll(0.0),
-                    shape: const WidgetStatePropertyAll<OutlinedBorder>(
-                        RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.0)))),
+    return Scaffold(
+        appBar: AppBar(
+          title: Text('${widget.companyName} - Ativos'),
+          foregroundColor: theme.colorScheme.onPrimary,
+          backgroundColor: theme.primaryColor,
+          actions: [
+            SearchAnchor(
+              suggestionsBuilder: (context, controller) {
+                return [const Text('data')];
+              },
+              builder: (BuildContext context, SearchController controller) {
+                return const SizedBox(
+                  width: 60,
+                  child: Center(
+                    child: Icon(
+                      Icons.search,
+                      size: 28.0,
+                    ),
                   ),
-                ),
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.0),
-                  child: Row(
-                    children: [
-                      Padding(
-                        padding: EdgeInsets.only(right: 8.0),
-                        child: Chip(label: Text('Sensor de Energia')),
+                );
+              },
+            ),
+          ],
+        ),
+        body: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: FilterChip(
+                        label: const Text('Sensor de Energia'),
+                        onSelected: (value) => setState(() {
+                          energySensorSelected = value;
+                        }),
+                        selected: energySensorSelected,
                       ),
-                      Chip(label: Text('Crítico')),
-                    ],
-                  ),
+                    ),
+                    FilterChip(
+                      label: const Text('Crítico'),
+                      onSelected: (value) => setState(() {
+                        criticSelected = value;
+                      }),
+                      selected: criticSelected,
+                    ),
+                  ],
                 ),
-                BlocBuilder<AssetBloc, AssetState>(
-                  bloc: bloc,
-                  buildWhen: (previous, current) =>
-                      current is Loading || current is AssetsLoaded,
-                  builder: (context, state) {
-                    if (state is Loading) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else if (state is AssetsLoaded) {
-                      final locations = state.locations;
-                      return Expanded(
-                        child: ListView.builder(
-                          itemCount: locations.length,
+              ),
+              BlocBuilder<TreeBloc, TreeState>(
+                bloc: bloc,
+                buildWhen: (previous, current) =>
+                    current is Loading || current is TreeLoaded,
+                builder: (context, state) {
+                  if (state is Loading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (state is TreeLoaded) {
+                    final branchs = state.branchs;
+                    return Expanded(
+                      child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: branchs.length,
                           itemBuilder: (context, index) {
-                            final location = locations[index];
+                            final branch = branchs[index];
 
-                            return ListTile(
-                              title: Text(location.name,
-                                  style: theme.textTheme.titleMedium),
-                              subtitle: location.subLocations != null ||
-                                      location.assets != null
-                                  ? Column(children: [
-                                      if (location.subLocations != null)
-                                        ...location.subLocations!
-                                            .map((subLocation) {
-                                          return ListTile(
-                                            title: Text(subLocation.name),
-                                          );
-                                        }),
-                                    ])
-                                  : null,
+                            return BranchWidget(
+                              text: branch.name,
+                              type: branch.type,
+                              branches: branch.branches,
                             );
-                          },
-                        ),
-                      );
-                    }
-                    return const LimitedBox();
-                  },
-                ),
-              ],
-            ),
-          )),
-    );
+                          }),
+                    );
+                  }
+                  return const LimitedBox();
+                },
+              ),
+            ],
+          ),
+        ));
   }
 }

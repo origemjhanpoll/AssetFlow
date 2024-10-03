@@ -1,10 +1,10 @@
 import 'package:asset_flow/data/datasources/remote_datasource.dart';
 import 'package:asset_flow/data/repositories/assets_repository.dart';
 import 'package:asset_flow/domain/repositories/i_assets_repository.dart';
-import 'package:asset_flow/domain/usecases/filter_asset_and_location.dart';
+import 'package:asset_flow/domain/usecases/filter_branchs.dart';
 import 'package:asset_flow/domain/usecases/get_companies.dart';
-import 'package:asset_flow/domain/usecases/get_locations.dart';
-import 'package:asset_flow/presentation/bloc/asset_bloc.dart';
+import 'package:asset_flow/domain/usecases/get_tree.dart';
+import 'package:asset_flow/presentation/bloc/tree_bloc.dart';
 import 'package:get_it/get_it.dart';
 
 import 'package:flutter/services.dart';
@@ -18,15 +18,14 @@ Future<void> init() async {
     () => AssetsRepository(di<RemoteDataSource>()),
   );
   di.registerLazySingleton(() => GetCompanies(di<IAssetsRepository>()));
-  di.registerLazySingleton(() => GetLocations(di<IAssetsRepository>()));
-  di.registerLazySingleton(
-      () => FilterAssetAndLocation(di<IAssetsRepository>()));
+  di.registerLazySingleton(() => GetTree(di<IAssetsRepository>()));
+  di.registerLazySingleton(() => FilterBranchs(di<IAssetsRepository>()));
 
-  di.registerFactory<AssetBloc>(
-    () => AssetBloc(
+  di.registerFactory<TreeBloc>(
+    () => TreeBloc(
       getCompanies: di<GetCompanies>(),
-      getLocations: di<GetLocations>(),
-      filterAssetAndLocation: di<FilterAssetAndLocation>(),
+      getTree: di<GetTree>(),
+      filterBranchs: di<FilterBranchs>(),
     ),
   );
 }

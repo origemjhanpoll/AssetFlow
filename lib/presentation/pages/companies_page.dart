@@ -1,5 +1,5 @@
 import 'package:asset_flow/injection.dart';
-import 'package:asset_flow/presentation/bloc/asset_bloc.dart';
+import 'package:asset_flow/presentation/bloc/tree_bloc.dart';
 import 'package:asset_flow/presentation/pages/assets_page.dart';
 import 'package:asset_flow/presentation/widgets/logo_widget.dart';
 import 'package:flutter/material.dart';
@@ -13,11 +13,11 @@ class CompaniesPage extends StatefulWidget {
 }
 
 class _CompaniesPageState extends State<CompaniesPage> {
-  late AssetBloc bloc;
+  late TreeBloc bloc;
 
   @override
   void initState() {
-    bloc = di<AssetBloc>();
+    bloc = di<TreeBloc>();
     bloc.add(GetCompaniesEvent());
     super.initState();
   }
@@ -57,7 +57,7 @@ class _CompaniesPageState extends State<CompaniesPage> {
               ),
               subtitle: const Text('Selecione uma empresa'),
             ),
-            BlocBuilder<AssetBloc, AssetState>(
+            BlocBuilder<TreeBloc, TreeState>(
               bloc: bloc,
               buildWhen: (previous, current) =>
                   current is Loading || current is CompaniesLoaded,

@@ -1,7 +1,7 @@
-import 'package:asset_flow/presentation/widgets/asset_widget.dart';
+import 'package:asset_flow/utils/item_type.dart';
 import 'package:equatable/equatable.dart';
 
-class Asset extends Equatable {
+class Branch extends Equatable {
   final String id;
   final String name;
   final String? gatewayId;
@@ -10,10 +10,10 @@ class Asset extends Equatable {
   final String? sensorId;
   final String? sensorType;
   final String? status;
-  final AssetType? type;
-  final List<Asset>? elements;
+  final ItemType type;
+  final List<Branch> branches;
 
-  const Asset({
+  Branch({
     required this.id,
     required this.name,
     this.gatewayId,
@@ -22,12 +22,13 @@ class Asset extends Equatable {
     this.sensorId,
     this.sensorType,
     this.status,
-    this.type,
-    this.elements,
-  });
+    ItemType? type,
+    List<Branch>? branches,
+  })  : branches = branches ?? [],
+        type = type ?? ItemType.location;
 
-  factory Asset.fromJson(Map<String, dynamic> json) {
-    return Asset(
+  factory Branch.fromJson(Map<String, dynamic> json) {
+    return Branch(
       id: json['id'],
       name: json['name'],
       gatewayId: json['gatewayId'],
@@ -52,7 +53,7 @@ class Asset extends Equatable {
     };
   }
 
-  Asset copyWith({
+  Branch copyWith({
     String? id,
     String? name,
     String? locationId,
@@ -60,10 +61,10 @@ class Asset extends Equatable {
     String? sensorId,
     String? sensorType,
     String? status,
-    AssetType? type,
-    List<Asset>? elements,
+    ItemType? type,
+    List<Branch>? branches,
   }) {
-    return Asset(
+    return Branch(
       id: id ?? this.id,
       name: name ?? this.name,
       locationId: locationId ?? this.locationId,
@@ -72,7 +73,7 @@ class Asset extends Equatable {
       sensorType: sensorType ?? this.sensorType,
       status: status ?? this.status,
       type: type ?? this.type,
-      elements: elements ?? this.elements,
+      branches: branches ?? this.branches,
     );
   }
 
@@ -86,6 +87,6 @@ class Asset extends Equatable {
         sensorType,
         status,
         type,
-        elements,
+        branches,
       ];
 }
