@@ -1,7 +1,7 @@
 import 'package:asset_flow/domain/entities/branch.dart';
 import 'package:asset_flow/domain/repositories/i_assets_repository.dart';
-import 'package:asset_flow/utils/item_type.dart';
-import 'package:asset_flow/utils/set_type.dart';
+import 'package:asset_flow/utils/types.dart';
+import 'package:asset_flow/utils/set_types.dart';
 
 class GetTree {
   final IAssetsRepository repository;
@@ -13,14 +13,14 @@ class GetTree {
     var assets = await repository.getAssets(companyId: companyId);
 
     assets = assets
-        .map((element) => element.copyWith(type: setType(element)))
+        .map((element) => element.copyWith(branchType: setBranchType(element)))
         .toList();
 
     locations = locations
-        .map((element) => element.copyWith(type: ItemType.location))
+        .map((element) => element.copyWith(branchType: BranchType.location))
         .toList();
 
-    final branchs = [...assets, ...locations];
+    final branchs = [...locations, ...assets];
     final tree = _buildTree(branchs);
 
     return tree;

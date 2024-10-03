@@ -1,64 +1,74 @@
 import 'package:asset_flow/domain/entities/branch.dart';
-import 'package:asset_flow/utils/item_type.dart';
+import 'package:asset_flow/utils/types.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
-class BranchWidget extends StatefulWidget {
-  const BranchWidget({
-    super.key,
-    required this.text,
-    this.branches,
-    this.type = ItemType.component,
-  });
+class BranchWidget extends StatelessWidget {
+  const BranchWidget({super.key, required this.branch, required this.branches});
 
-  final String text;
-  final ItemType type;
-  final List<Branch>? branches;
+  final Branch branch;
+  final List<Branch> branches;
 
-  @override
-  State<BranchWidget> createState() => _BranchWidgetState();
-}
-
-class _BranchWidgetState extends State<BranchWidget> {
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 16.0),
-      child: Column(
-        children: [
-          Row(
-            children: [
-              SvgPicture.asset(assetType(widget.type)),
-              Text(
-                widget.text,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.bodyLarge,
-              ),
-              Icon(
-                Icons.circle,
-                size: 8.0,
-                color: theme.colorScheme.error,
-              )
-            ],
-          ),
-          if (widget.branches != null)
-            ...widget.branches!.map((element) => BranchWidget(
-                  text: element.name,
-                  type: element.type,
-                  branches: element.branches,
-                ))
-        ],
-      ),
-    );
-  }
+    final theme = Theme.of(context);
 
-  ThemeData get theme => Theme.of(context);
+    if (!context.mounted) {
+      print('mounted 1');
+      return const Center(child: CircularProgressIndicator());
+    } else {
+      print('mounted 2');
+
+      return Padding(
+        padding: const EdgeInsets.only(left: 16.0),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                SvgPicture.asset(assetType(branch.branchType)),
+                Flexible(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: Text(
+                      branch.name,
+                      overflow: TextOverflow.ellipsis,
+                      style: theme.textTheme.bodyLarge,
+                    ),
+                  ),
+                ),
+                if (branch.getSensorType == SensorType.energy)
+                  const Icon(
+                    Icons.bolt,
+                    size: 20.0,
+                    color: Colors.green,
+                  ),
+                if (branch.getStatusType == StatusType.alert)
+                  const Icon(
+                    Icons.circle,
+                    size: 12.0,
+                    color: Colors.red,
+                  )
+              ],
+            ),
+            if (branch.branches.isNotEmpty)
+              ...branch.branches.map((element) {
+                return BranchWidget(
+                  branch: element,
+                  branches: element.branches,
+                );
+              })
+          ],
+        ),
+      );
+    }
+  }
 }
 
-String assetType(ItemType type) {
+String assetType(BranchType type) {
   return switch (type) {
-    ItemType.location => 'assets/location.svg',
-    ItemType.asset => 'assets/asset.svg',
-    ItemType.component => 'assets/component.svg',
+    BranchType.location => 'assets/location.svg',
+    BranchType.asset => 'assets/asset.svg',
+    BranchType.component => 'assets/component.svg',
+    _ => 'assets/report.svg',
   };
 }

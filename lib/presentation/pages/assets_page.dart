@@ -35,7 +35,6 @@ class _AssetsPageState extends State<AssetsPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
     return Scaffold(
         appBar: AppBar(
           title: Text('${widget.companyName} - Ativos'),
@@ -99,17 +98,15 @@ class _AssetsPageState extends State<AssetsPage> {
                       child: CircularProgressIndicator(),
                     );
                   } else if (state is TreeLoaded) {
-                    final branchs = state.branchs;
+                    final branches = state.branches;
                     return Expanded(
                       child: ListView.builder(
                           shrinkWrap: true,
-                          itemCount: branchs.length,
+                          itemCount: branches.length,
                           itemBuilder: (context, index) {
-                            final branch = branchs[index];
-
+                            final branch = branches[index];
                             return BranchWidget(
-                              text: branch.name,
-                              type: branch.type,
+                              branch: branch,
                               branches: branch.branches,
                             );
                           }),

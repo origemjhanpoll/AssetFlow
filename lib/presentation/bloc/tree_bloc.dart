@@ -40,7 +40,7 @@ class TreeBloc extends Bloc<TreeEvent, TreeState> {
     emit(Loading());
     try {
       final branchs = await getTree(companyId: event.companyId);
-      emit(TreeLoaded(branchs: branchs));
+      emit(TreeLoaded(branches: branchs));
     } catch (e, s) {
       debugPrint('Erro: $e');
       debugPrint('Stack trace: $s');

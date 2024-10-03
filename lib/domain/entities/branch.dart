@@ -1,4 +1,4 @@
-import 'package:asset_flow/utils/item_type.dart';
+import 'package:asset_flow/utils/types.dart';
 import 'package:equatable/equatable.dart';
 
 class Branch extends Equatable {
@@ -10,7 +10,7 @@ class Branch extends Equatable {
   final String? sensorId;
   final String? sensorType;
   final String? status;
-  final ItemType type;
+  final BranchType branchType;
   final List<Branch> branches;
 
   Branch({
@@ -22,10 +22,25 @@ class Branch extends Equatable {
     this.sensorId,
     this.sensorType,
     this.status,
-    ItemType? type,
+    required this.branchType,
     List<Branch>? branches,
-  })  : branches = branches ?? [],
-        type = type ?? ItemType.location;
+  }) : branches = branches ?? [];
+
+  SensorType? get getSensorType {
+    if (sensorType == 'energy') {
+      return SensorType.energy;
+    } else {
+      return SensorType.vibration;
+    }
+  }
+
+  StatusType? get getStatusType {
+    if (status == 'alert') {
+      return StatusType.alert;
+    } else {
+      return StatusType.operating;
+    }
+  }
 
   factory Branch.fromJson(Map<String, dynamic> json) {
     return Branch(
@@ -37,6 +52,7 @@ class Branch extends Equatable {
       sensorId: json['sensorId'],
       sensorType: json['sensorType'],
       status: json['status'],
+      branchType: BranchType.root,
     );
   }
 
@@ -61,7 +77,7 @@ class Branch extends Equatable {
     String? sensorId,
     String? sensorType,
     String? status,
-    ItemType? type,
+    BranchType? branchType,
     List<Branch>? branches,
   }) {
     return Branch(
@@ -72,7 +88,7 @@ class Branch extends Equatable {
       sensorId: sensorId ?? this.sensorId,
       sensorType: sensorType ?? this.sensorType,
       status: status ?? this.status,
-      type: type ?? this.type,
+      branchType: branchType ?? this.branchType,
       branches: branches ?? this.branches,
     );
   }
@@ -86,7 +102,7 @@ class Branch extends Equatable {
         sensorId,
         sensorType,
         status,
-        type,
+        branchType,
         branches,
       ];
 }

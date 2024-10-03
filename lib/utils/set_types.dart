@@ -1,15 +1,15 @@
 import 'package:asset_flow/domain/entities/branch.dart';
-import 'package:asset_flow/utils/item_type.dart';
+import 'package:asset_flow/utils/types.dart';
 
-ItemType setType(Branch branch) {
+BranchType setBranchType(Branch branch) {
   if (branch.sensorType != null) {
-    return ItemType.component;
+    return BranchType.component;
   }
 
   if ((branch.locationId != null || branch.parentId != null) &&
       branch.sensorId == null) {
-    return ItemType.asset;
+    return BranchType.asset;
   }
 
-  return ItemType.component;
+  return BranchType.component;
 }

@@ -20,9 +20,9 @@ final class CompaniesLoaded extends TreeState {
 }
 
 final class TreeLoaded extends TreeState {
-  final List<Branch> branchs;
-  const TreeLoaded({required this.branchs});
+  final List<Branch> branches;
+  const TreeLoaded({required this.branches});
 
   @override
-  List<Object> get props => [branchs];
+  List<Object> get props => [branches];
 }
