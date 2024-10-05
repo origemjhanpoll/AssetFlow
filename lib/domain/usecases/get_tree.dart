@@ -12,18 +12,12 @@ class GetTree {
     var locations = await repository.getLocations(companyId: companyId);
     var assets = await repository.getAssets(companyId: companyId);
 
-    assets = assets
-        .map((element) => element.copyWith(branchType: setBranchType(element)))
-        .toList();
+    final branchs = [
+      ...locations.map((loc) => _updateBranchType(loc, BranchType.location)),
+      ...assets.map((asset) => _updateBranchType(asset, setBranchType(asset))),
+    ];
 
-    locations = locations
-        .map((element) => element.copyWith(branchType: BranchType.location))
-        .toList();
-
-    final branchs = [...locations, ...assets];
-    final tree = _buildTree(branchs);
-
-    return tree;
+    return _buildTree(branchs);
   }
 }
 
@@ -45,4 +39,8 @@ List<Branch> _buildTree(List<Branch> branchs) {
   }
 
   return tree;
+}
+
+Branch _updateBranchType(Branch branch, BranchType branchType) {
+  return branch.copyWith(branchType: branchType);
 }

@@ -101,13 +101,14 @@ class _AssetsPageState extends State<AssetsPage> {
                     final branches = state.branches;
                     return Expanded(
                       child: ListView.builder(
+                          primary: true,
                           shrinkWrap: true,
                           itemCount: branches.length,
                           itemBuilder: (context, index) {
                             final branch = branches[index];
                             return BranchWidget(
+                              key: Key(branch.id.toString()),
                               branch: branch,
-                              branches: branch.branches,
                             );
                           }),
                     );
