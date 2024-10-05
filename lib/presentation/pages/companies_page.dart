@@ -1,5 +1,5 @@
 import 'package:asset_flow/injection.dart';
-import 'package:asset_flow/presentation/bloc/asset_bloc.dart';
+import 'package:asset_flow/presentation/bloc/tree_bloc.dart';
 import 'package:asset_flow/presentation/pages/assets_page.dart';
 import 'package:asset_flow/presentation/widgets/logo_widget.dart';
 import 'package:flutter/material.dart';
@@ -13,11 +13,11 @@ class CompaniesPage extends StatefulWidget {
 }
 
 class _CompaniesPageState extends State<CompaniesPage> {
-  late AssetBloc bloc;
+  late TreeBloc bloc;
 
   @override
   void initState() {
-    bloc = di<AssetBloc>();
+    bloc = di<TreeBloc>();
     bloc.add(GetCompaniesEvent());
     super.initState();
   }
@@ -57,16 +57,16 @@ class _CompaniesPageState extends State<CompaniesPage> {
               ),
               subtitle: const Text('Selecione uma empresa'),
             ),
-            BlocBuilder<AssetBloc, AssetState>(
+            BlocBuilder<TreeBloc, TreeState>(
               bloc: bloc,
               buildWhen: (previous, current) =>
-                  current is Loading || current is AssetCompanies,
+                  current is Loading || current is CompaniesLoaded,
               builder: (context, state) {
                 if (state is Loading) {
                   return const Center(
                     child: CircularProgressIndicator(),
                   );
-                } else if (state is AssetCompanies) {
+                } else if (state is CompaniesLoaded) {
                   final companies = state.companies;
                   return Expanded(
                     child: ListView.builder(
@@ -77,8 +77,10 @@ class _CompaniesPageState extends State<CompaniesPage> {
                         return ListTile(
                           onTap: () {
                             Navigator.of(context).push(MaterialPageRoute<void>(
-                                builder: (BuildContext context) =>
-                                    const AssetsPage()));
+                                builder: (BuildContext context) => AssetsPage(
+                                      companyId: company.id,
+                                      companyName: company.name,
+                                    )));
                           },
                           title: Text(company.name,
                               style: theme.textTheme.titleMedium),

@@ -1,22 +1,28 @@
 import 'package:asset_flow/injection.dart';
-import 'package:asset_flow/presentation/bloc/asset_bloc.dart';
+import 'package:asset_flow/presentation/bloc/tree_bloc.dart';
+import 'package:asset_flow/presentation/widgets/branch_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AssetsPage extends StatefulWidget {
-  const AssetsPage({super.key});
+  final String companyId;
+  final String companyName;
+  const AssetsPage(
+      {super.key, required this.companyId, required this.companyName});
 
   @override
   State<AssetsPage> createState() => _AssetsPageState();
 }
 
 class _AssetsPageState extends State<AssetsPage> {
-  late AssetBloc bloc;
+  late TreeBloc bloc;
+  bool energySensorSelected = false;
+  bool criticSelected = false;
 
   @override
   void initState() {
-    bloc = di<AssetBloc>();
-    bloc.add(GetAssetsEvent());
+    bloc = di<TreeBloc>();
+    bloc.add(TreeLoadedEvent(companyId: widget.companyId));
     super.initState();
   }
 
@@ -29,51 +35,89 @@ class _AssetsPageState extends State<AssetsPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Ativos'),
+          title: Text('${widget.companyName} - Ativos'),
           foregroundColor: theme.colorScheme.onPrimary,
           backgroundColor: theme.primaryColor,
-        ),
-        body: Column(
-          children: [
-            const SearchBar(),
-            const Row(
-              children: [
-                Chip(label: Text('Sensor de Energia')),
-                Chip(label: Text('Crítico')),
-              ],
-            ),
-            BlocBuilder<AssetBloc, AssetState>(
-              bloc: bloc,
-              buildWhen: (previous, current) =>
-                  current is Loading || current is AssetLoaded,
-              builder: (context, state) {
-                if (state is Loading) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (state is AssetLoaded) {
-                  final assets = state.assets;
-                  return Expanded(
-                    child: ListView.builder(
-                      itemCount: assets.length,
-                      itemBuilder: (context, index) {
-                        final asset = assets[index];
-
-                        return ListTile(
-                          title: Text(asset.name,
-                              style: theme.textTheme.titleMedium),
-                        );
-                      },
+          actions: [
+            SearchAnchor(
+              suggestionsBuilder: (context, controller) {
+                return [const Text('data')];
+              },
+              builder: (BuildContext context, SearchController controller) {
+                return const SizedBox(
+                  width: 60,
+                  child: Center(
+                    child: Icon(
+                      Icons.search,
+                      size: 28.0,
                     ),
-                  );
-                }
-                return const LimitedBox();
+                  ),
+                );
               },
             ),
           ],
+        ),
+        body: SafeArea(
+          bottom: false,
+          child: Column(
+            children: [
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                child: Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(right: 8.0),
+                      child: FilterChip(
+                        label: const Text('Sensor de Energia'),
+                        onSelected: (value) => setState(() {
+                          energySensorSelected = value;
+                        }),
+                        selected: energySensorSelected,
+                      ),
+                    ),
+                    FilterChip(
+                      label: const Text('Crítico'),
+                      onSelected: (value) => setState(() {
+                        criticSelected = value;
+                      }),
+                      selected: criticSelected,
+                    ),
+                  ],
+                ),
+              ),
+              BlocBuilder<TreeBloc, TreeState>(
+                bloc: bloc,
+                buildWhen: (previous, current) =>
+                    current is Loading || current is TreeLoaded,
+                builder: (context, state) {
+                  if (state is Loading) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (state is TreeLoaded) {
+                    final branches = state.branches;
+                    return Expanded(
+                      child: ListView.builder(
+                          primary: true,
+                          shrinkWrap: true,
+                          itemCount: branches.length,
+                          itemBuilder: (context, index) {
+                            final branch = branches[index];
+                            return BranchWidget(
+                              key: Key(branch.id.toString()),
+                              branch: branch,
+                            );
+                          }),
+                    );
+                  }
+                  return const LimitedBox();
+                },
+              ),
+            ],
+          ),
         ));
   }
 }
