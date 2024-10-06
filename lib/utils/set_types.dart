@@ -13,3 +13,7 @@ BranchType setBranchType(Branch branch) {
 
   return BranchType.component;
 }
+
+Branch updateBranchType(Branch branch, BranchType branchType) {
+  return branch.copyWith(branchType: branchType);
+}

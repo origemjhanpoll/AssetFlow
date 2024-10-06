@@ -1,13 +1,20 @@
 import 'package:asset_flow/domain/entities/branch.dart';
 import 'package:asset_flow/utils/types.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class BranchWidget extends StatefulWidget {
-  const BranchWidget({super.key, required this.branch, this.level = 0});
+  const BranchWidget({
+    super.key,
+    required this.branch,
+    this.level = 0,
+    this.isExpanded = false,
+  });
 
   final Branch branch;
   final int level;
+  final bool isExpanded;
 
   @override
   State<BranchWidget> createState() => _BranchWidgetState();
@@ -19,7 +26,7 @@ class _BranchWidgetState extends State<BranchWidget> {
 
   @override
   void initState() {
-    isExpanded = false;
+    isExpanded = widget.isExpanded;
     hasBranches = widget.branch.branches.isNotEmpty;
     super.initState();
   }
@@ -30,6 +37,7 @@ class _BranchWidgetState extends State<BranchWidget> {
       children: [
         InkWell(
           onTap: () {
+            HapticFeedback.lightImpact();
             setState(() {
               isExpanded = !isExpanded;
             });

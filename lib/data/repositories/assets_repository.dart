@@ -11,22 +11,35 @@ class AssetsRepository implements IAssetsRepository {
   @override
   Future<List<Company>> getCompanies() async {
     final data = await remote.getData();
-    final List companiesJson = data['companies'];
+    final List<dynamic>? companiesJson = data?['companies'];
 
-    return companiesJson.map((json) => Company.fromJson(json)).toList();
+    if (companiesJson != null) {
+      return companiesJson.map((json) => Company.fromJson(json)).toList();
+    } else {
+      throw Exception("No companies data found.");
+    }
   }
 
   @override
   Future<List<Branch>> getAssets({required String companyId}) async {
     final data = await remote.getData();
-    final List assetsJson = data[companyId]['assets'];
-    return assetsJson.map((json) => Branch.fromJson(json)).toList();
+    final List<dynamic>? assetsJson = data?[companyId]['assets'];
+
+    if (assetsJson != null) {
+      return assetsJson.map((json) => Branch.fromJson(json)).toList();
+    } else {
+      throw Exception("No assets data found.");
+    }
   }
 
   @override
   Future<List<Branch>> getLocations({required String companyId}) async {
     final data = await remote.getData();
-    final List locationsJson = data[companyId]['locations'];
-    return locationsJson.map((json) => Branch.fromJson(json)).toList();
+    final List<dynamic>? locationsJson = data![companyId]['locations'];
+    if (locationsJson != null) {
+      return locationsJson.map((json) => Branch.fromJson(json)).toList();
+    } else {
+      throw Exception("No locations data found.");
+    }
   }
 }

@@ -7,14 +7,6 @@ class GetCompanies {
   GetCompanies(this.repository);
 
   Future<List<Company>> call() async {
-    final companies = await repository.getCompanies();
-
-    final updatedCompanies = Future.wait(companies.map((element) async {
-      final assets = await repository.getAssets(companyId: element.id);
-
-      return element.copyWith(assetCount: assets.length);
-    }).toList());
-
-    return updatedCompanies;
+    return await repository.getCompanies();
   }
 }

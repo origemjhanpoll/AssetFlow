@@ -26,3 +26,11 @@ final class TreeLoaded extends TreeState {
   @override
   List<Object> get props => [branches];
 }
+
+final class FilterLoaded extends TreeEvent {
+  final String query;
+  const FilterLoaded({required this.query});
+
+  @override
+  List<Object> get props => [query];
+}

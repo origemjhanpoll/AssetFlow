@@ -16,3 +16,11 @@ final class TreeLoadedEvent extends TreeEvent {
   @override
   List<Object> get props => [companyId];
 }
+
+final class FilterLoadedEvent extends TreeEvent {
+  final String companyId;
+  const FilterLoadedEvent({required this.companyId});
+
+  @override
+  List<Object> get props => [companyId];
+}

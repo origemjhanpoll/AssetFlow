@@ -1,5 +1,6 @@
 import 'package:asset_flow/injection.dart';
 import 'package:asset_flow/presentation/bloc/tree_bloc.dart';
+import 'package:asset_flow/presentation/widgets/back_button_widget.dart';
 import 'package:asset_flow/presentation/widgets/branch_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,15 +36,22 @@ class _AssetsPageState extends State<AssetsPage> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     return Scaffold(
         appBar: AppBar(
+          forceMaterialTransparency: true,
           title: Text('${widget.companyName} - Ativos'),
-          foregroundColor: theme.colorScheme.onPrimary,
-          backgroundColor: theme.primaryColor,
+          leading: const Padding(
+            padding: EdgeInsets.all(8.0),
+            child: BackButtonWidget(),
+          ),
           actions: [
             SearchAnchor(
+              viewHintText: 'Buscar local ou ativos',
+              viewBackgroundColor: theme.scaffoldBackgroundColor,
+              viewLeading: const BackButtonWidget(),
               suggestionsBuilder: (context, controller) {
-                return [const Text('data')];
+                return [];
               },
               builder: (BuildContext context, SearchController controller) {
                 return const SizedBox(
@@ -94,8 +102,10 @@ class _AssetsPageState extends State<AssetsPage> {
                     current is Loading || current is TreeLoaded,
                 builder: (context, state) {
                   if (state is Loading) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
+                    return const Expanded(
+                      child: Center(
+                        child: CircularProgressIndicator(),
+                      ),
                     );
                   } else if (state is TreeLoaded) {
                     final branches = state.branches;
