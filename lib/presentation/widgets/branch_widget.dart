@@ -75,8 +75,8 @@ class _BranchWidgetState extends State<BranchWidget> {
                             ),
                           if (widget.branch.getStatusType == StatusType.alert)
                             const Icon(
-                              Icons.circle,
-                              size: 12.0,
+                              Icons.error,
+                              size: 18.0,
                               color: Colors.red,
                             ),
                         ],

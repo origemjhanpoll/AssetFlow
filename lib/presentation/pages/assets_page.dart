@@ -19,6 +19,7 @@ class _AssetsPageState extends State<AssetsPage> {
   late TreeBloc bloc;
   bool energySensorSelected = false;
   bool criticSelected = false;
+  bool showSeachBar = false;
 
   @override
   void initState() {
@@ -39,63 +40,94 @@ class _AssetsPageState extends State<AssetsPage> {
 
     return Scaffold(
         appBar: AppBar(
+          titleSpacing: 4.0,
           forceMaterialTransparency: true,
-          title: Text('${widget.companyName} - Ativos'),
+          title: showSeachBar
+              ? TextField(
+                  autofocus: showSeachBar,
+                  decoration: InputDecoration(
+                    constraints: const BoxConstraints.expand(height: 48.0),
+                    hintText: 'Buscar Ativo ou Local',
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(8.0)),
+                  ),
+                )
+              : Text('${widget.companyName} - Ativos'),
+          leadingWidth: 56,
           leading: const Padding(
             padding: EdgeInsets.all(8.0),
             child: BackButtonWidget(),
           ),
           actions: [
-            SearchAnchor(
-              viewHintText: 'Buscar local ou ativos',
-              viewBackgroundColor: theme.scaffoldBackgroundColor,
-              viewLeading: const BackButtonWidget(),
-              suggestionsBuilder: (context, controller) {
-                return [];
+            IconButton(
+              color: theme.primaryColor,
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(
+                    theme.colorScheme.secondaryContainer),
+              ),
+              onPressed: () {
+                setState(() {
+                  showSeachBar = !showSeachBar;
+                });
               },
-              builder: (BuildContext context, SearchController controller) {
-                return const SizedBox(
-                  width: 60,
-                  child: Center(
-                    child: Icon(
-                      Icons.search,
-                      size: 28.0,
-                    ),
-                  ),
-                );
-              },
+              icon: Icon(showSeachBar ? Icons.close : Icons.search),
             ),
           ],
+          bottom: PreferredSize(
+            preferredSize: const Size.fromHeight(48.0),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: FilterChip(
+                      showCheckmark: false,
+                      avatar: Icon(
+                        energySensorSelected ? Icons.bolt : Icons.bolt_outlined,
+                        size: 20.0,
+                        color: energySensorSelected
+                            ? Colors.green
+                            : theme.hintColor,
+                      ),
+                      label: Text(
+                        'Sensor de Energia',
+                        style: energySensorSelected
+                            ? TextStyle(color: theme.primaryColor)
+                            : null,
+                      ),
+                      onSelected: (value) => setState(() {
+                        energySensorSelected = value;
+                      }),
+                      selected: energySensorSelected,
+                    ),
+                  ),
+                  FilterChip(
+                    showCheckmark: false,
+                    avatar: Icon(
+                      criticSelected ? Icons.error : Icons.error_outline,
+                      color: criticSelected ? Colors.red : theme.hintColor,
+                    ),
+                    label: Text(
+                      'Crítico',
+                      style: criticSelected
+                          ? TextStyle(color: theme.primaryColor)
+                          : null,
+                    ),
+                    onSelected: (value) => setState(() {
+                      criticSelected = value;
+                    }),
+                    selected: criticSelected,
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
         body: SafeArea(
           bottom: false,
           child: Column(
             children: [
-              Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                child: Row(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(right: 8.0),
-                      child: FilterChip(
-                        label: const Text('Sensor de Energia'),
-                        onSelected: (value) => setState(() {
-                          energySensorSelected = value;
-                        }),
-                        selected: energySensorSelected,
-                      ),
-                    ),
-                    FilterChip(
-                      label: const Text('Crítico'),
-                      onSelected: (value) => setState(() {
-                        criticSelected = value;
-                      }),
-                      selected: criticSelected,
-                    ),
-                  ],
-                ),
-              ),
               BlocBuilder<TreeBloc, TreeState>(
                 bloc: bloc,
                 buildWhen: (previous, current) =>
