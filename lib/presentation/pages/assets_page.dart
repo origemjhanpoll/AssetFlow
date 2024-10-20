@@ -44,7 +44,7 @@ class _AssetsPageState extends State<AssetsPage> {
           forceMaterialTransparency: true,
           title: showSeachBar
               ? TextField(
-                  autofocus: showSeachBar,
+                  autofocus: true,
                   decoration: InputDecoration(
                     constraints: const BoxConstraints.expand(height: 48.0),
                     hintText: 'Buscar Ativo ou Local',
@@ -53,7 +53,6 @@ class _AssetsPageState extends State<AssetsPage> {
                   ),
                 )
               : Text('${widget.companyName} - Ativos'),
-          leadingWidth: 56,
           leading: const Padding(
             padding: EdgeInsets.all(8.0),
             child: BackButtonWidget(),
