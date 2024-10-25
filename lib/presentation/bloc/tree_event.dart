@@ -17,6 +17,15 @@ final class TreeLoadedEvent extends TreeEvent {
   List<Object> get props => [companyId];
 }
 
+final class TreeLoadMoreEvent extends TreeEvent {
+  final int page;
+
+  const TreeLoadMoreEvent({required this.page});
+
+  @override
+  List<Object> get props => [page];
+}
+
 final class FilteredEvent extends TreeEvent {
   final String companyId;
   final String query;

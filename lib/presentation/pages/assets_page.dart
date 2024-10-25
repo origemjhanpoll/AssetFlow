@@ -17,21 +17,33 @@ class AssetsPage extends StatefulWidget {
 
 class _AssetsPageState extends State<AssetsPage> {
   late TreeBloc bloc;
+  late ScrollController scrollController;
   bool energySensorSelected = false;
   bool criticSelected = false;
   bool showSeachBar = false;
+  int page = 1;
 
   @override
   void initState() {
     bloc = di<TreeBloc>();
     bloc.add(TreeLoadedEvent(companyId: widget.companyId));
+    scrollController = ScrollController();
+    scrollController.addListener(_scrollListener);
     super.initState();
   }
 
   @override
   void dispose() {
     bloc.close();
+    scrollController.dispose();
     super.dispose();
+  }
+
+  void _scrollListener() {
+    if (scrollController.position.pixels ==
+        scrollController.position.maxScrollExtent) {
+      bloc.add(TreeLoadMoreEvent(page: page++));
+    }
   }
 
   @override
@@ -163,7 +175,7 @@ class _AssetsPageState extends State<AssetsPage> {
                     final branches = state.branches;
                     return Expanded(
                       child: ListView.builder(
-                          primary: true,
+                          controller: scrollController,
                           shrinkWrap: true,
                           itemCount: branches.length,
                           itemBuilder: (context, index) {

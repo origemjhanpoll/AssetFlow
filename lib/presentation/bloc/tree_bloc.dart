@@ -15,6 +15,8 @@ class TreeBloc extends Bloc<TreeEvent, TreeState> {
   final GetTree getTree;
   final FilterBranchs filterBranchs;
 
+  List<Branch> branches = [];
+
   TreeBloc({
     required this.getCompanies,
     required this.getTree,
@@ -22,6 +24,7 @@ class TreeBloc extends Bloc<TreeEvent, TreeState> {
   }) : super(TreeInitial()) {
     on<GetCompaniesEvent>(_getCompaniesEvent);
     on<TreeLoadedEvent>(_treeLoadedEvent);
+    on<TreeLoadMoreEvent>(_treeLoadMoreEvent);
     on<FilteredEvent>(_filteredEvent);
   }
 
@@ -40,8 +43,25 @@ class TreeBloc extends Bloc<TreeEvent, TreeState> {
   void _treeLoadedEvent(TreeLoadedEvent event, Emitter<TreeState> emit) async {
     emit(TreeLoading());
     try {
-      final branchs = await getTree(companyId: event.companyId);
-      emit(TreeLoaded(branches: branchs));
+      branches = await getTree(companyId: event.companyId);
+      if (branches.isNotEmpty) {
+        add(const TreeLoadMoreEvent(page: 1));
+      } else {
+        emit(TreeEmpty());
+      }
+    } catch (e, s) {
+      debugPrint('Erro: $e');
+      debugPrint('Stack trace: $s');
+    }
+  }
+
+  void _treeLoadMoreEvent(
+      TreeLoadMoreEvent event, Emitter<TreeState> emit) async {
+    emit(TreeLoading());
+    try {
+      int skip = branches.length < 30 ? branches.length : 30 * event.page;
+      final branchesCurrent = branches.sublist(0, skip);
+      emit(TreeLoaded(branches: branchesCurrent));
     } catch (e, s) {
       debugPrint('Erro: $e');
       debugPrint('Stack trace: $s');
@@ -49,31 +69,31 @@ class TreeBloc extends Bloc<TreeEvent, TreeState> {
   }
 
   void _filteredEvent(FilteredEvent event, Emitter<TreeState> emit) async {
-    try {
-      if (event.query.length >= 2) {
-        emit(TreeLoading());
-        final branchs = await filterBranchs(
-          query: event.query,
-          companyId: event.companyId,
-        );
+    // try {
+    //   if (event.query.length >= 2) {
+    //     emit(TreeLoading());
+    //     branchs = await filterBranchs(
+    //       query: event.query,
+    //       companyId: event.companyId,
+    //     );
 
-        if (branchs.isEmpty) {
-          print('2');
+    //     if (branchs.isEmpty) {
+    //       print('2');
 
-          emit(TreeEmpty());
-        } else {
-          print('3');
+    //       emit(TreeEmpty());
+    //     } else {
+    //       print('3');
 
-          emit(TreeLoaded(branches: branchs));
-        }
-      } else {
-        print('4');
+    //       emit(TreeLoaded(branches: branchs));
+    //     }
+    //   } else {
+    //     print('4');
 
-        emit(TreeEmpty());
-      }
-    } catch (e, s) {
-      debugPrint('Erro: $e');
-      debugPrint('Stack trace: $s');
-    }
+    //     emit(TreeEmpty());
+    //   }
+    // } catch (e, s) {
+    //   debugPrint('Erro: $e');
+    //   debugPrint('Stack trace: $s');
+    // }
   }
 }
