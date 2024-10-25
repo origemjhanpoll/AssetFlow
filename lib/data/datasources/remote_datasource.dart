@@ -12,8 +12,6 @@ class RemoteDataSource {
     const url =
         'https://raw.githubusercontent.com/origemjhanpoll/AssetFlow/refs/heads/main/assets/api_data.json';
 
-    debugPrint('getData');
-
     try {
       final response = await client.get(Uri.parse(url));
 

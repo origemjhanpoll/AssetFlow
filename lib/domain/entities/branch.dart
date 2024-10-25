@@ -1,6 +1,7 @@
 import 'package:asset_flow/utils/types.dart';
 import 'package:equatable/equatable.dart';
 
+// ignore: must_be_immutable
 class Branch extends Equatable {
   final String id;
   final String name;
@@ -12,6 +13,8 @@ class Branch extends Equatable {
   final String? status;
   final BranchType branchType;
   final List<Branch> branches;
+  final int level;
+  bool _expanded;
 
   Branch({
     required this.id,
@@ -23,8 +26,10 @@ class Branch extends Equatable {
     this.sensorType,
     this.status,
     required this.branchType,
+    this.level = 0,
     List<Branch>? branches,
-  }) : branches = branches ?? [];
+  })  : branches = branches ?? [],
+        _expanded = false;
 
   SensorType? get getSensorType {
     if (sensorType == 'energy') {
@@ -41,6 +46,10 @@ class Branch extends Equatable {
       return StatusType.operating;
     }
   }
+
+  bool get isExpanded => _expanded;
+
+  set expanded(bool value) => _expanded = value;
 
   factory Branch.fromJson(Map<String, dynamic> json) {
     return Branch(
@@ -79,6 +88,7 @@ class Branch extends Equatable {
     String? status,
     BranchType? branchType,
     List<Branch>? branches,
+    int? level,
   }) {
     return Branch(
       id: id ?? this.id,
@@ -90,6 +100,7 @@ class Branch extends Equatable {
       status: status ?? this.status,
       branchType: branchType ?? this.branchType,
       branches: branches ?? this.branches,
+      level: level ?? this.level,
     );
   }
 
@@ -104,5 +115,6 @@ class Branch extends Equatable {
         status,
         branchType,
         branches,
+        level,
       ];
 }

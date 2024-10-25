@@ -62,9 +62,9 @@ class _CompaniesPageState extends State<CompaniesPage> {
             BlocBuilder<TreeBloc, TreeState>(
               bloc: bloc,
               buildWhen: (previous, current) =>
-                  current is Loading || current is CompaniesLoaded,
+                  current is TreeLoading || current is CompaniesLoaded,
               builder: (context, state) {
-                if (state is Loading) {
+                if (state is TreeLoading) {
                   return const Center(
                     child: CircularProgressIndicator(),
                   );

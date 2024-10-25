@@ -43,20 +43,32 @@ class _AssetsPageState extends State<AssetsPage> {
           titleSpacing: 4.0,
           forceMaterialTransparency: true,
           title: showSeachBar
-              ? TextField(
-                  autofocus: true,
-                  decoration: InputDecoration(
-                    constraints: const BoxConstraints.expand(height: 48.0),
-                    hintText: 'Buscar Ativo ou Local',
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(8.0)),
+              ? Padding(
+                  padding: const EdgeInsets.only(left: 12.0),
+                  child: TextField(
+                    autofocus: true,
+                    onChanged: (value) {
+                      bloc.add(FilteredEvent(
+                        companyId: widget.companyId,
+                        query: value,
+                      ));
+                    },
+                    decoration: InputDecoration(
+                      constraints: const BoxConstraints.expand(height: 48.0),
+                      hintText: 'Buscar Ativo ou Local',
+                      border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(8.0)),
+                    ),
                   ),
                 )
               : Text('${widget.companyName} - Ativos'),
-          leading: const Padding(
-            padding: EdgeInsets.all(8.0),
-            child: BackButtonWidget(),
-          ),
+          automaticallyImplyLeading: !showSeachBar,
+          leading: !showSeachBar
+              ? const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: BackButtonWidget(),
+                )
+              : null,
           actions: [
             IconButton(
               color: theme.primaryColor,
@@ -65,6 +77,7 @@ class _AssetsPageState extends State<AssetsPage> {
                     theme.colorScheme.secondaryContainer),
               ),
               onPressed: () {
+                bloc.add(TreeLoadedEvent(companyId: widget.companyId));
                 setState(() {
                   showSeachBar = !showSeachBar;
                 });
@@ -130,12 +143,20 @@ class _AssetsPageState extends State<AssetsPage> {
               BlocBuilder<TreeBloc, TreeState>(
                 bloc: bloc,
                 buildWhen: (previous, current) =>
-                    current is Loading || current is TreeLoaded,
+                    current is TreeLoading ||
+                    current is TreeLoaded ||
+                    current is TreeEmpty,
                 builder: (context, state) {
-                  if (state is Loading) {
+                  if (state is TreeLoading) {
                     return const Expanded(
                       child: Center(
                         child: CircularProgressIndicator(),
+                      ),
+                    );
+                  } else if (state is TreeEmpty) {
+                    return const Expanded(
+                      child: Center(
+                        child: Text('Nenhum Ativo ou Local encontrado!'),
                       ),
                     );
                   } else if (state is TreeLoaded) {
@@ -150,6 +171,8 @@ class _AssetsPageState extends State<AssetsPage> {
                             return BranchWidget(
                               key: Key(branch.id.toString()),
                               branch: branch,
+                              isExpanded: branch.isExpanded,
+                              level: branch.level,
                             );
                           }),
                     );

@@ -30,9 +30,9 @@ List<Branch> _buildTree(List<Branch> branchs) {
     var locationId = item.locationId;
 
     if (parentId != null && map.containsKey(parentId)) {
-      map[parentId]?.branches.add(item);
+      map[parentId]!.branches.add(item);
     } else if (locationId != null && map.containsKey(locationId)) {
-      map[locationId]?.branches.add(item);
+      map[locationId]!.branches.add(item);
     } else {
       tree.add(item);
     }

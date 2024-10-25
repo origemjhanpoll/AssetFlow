@@ -8,8 +8,8 @@ class BranchWidget extends StatefulWidget {
   const BranchWidget({
     super.key,
     required this.branch,
-    this.level = 0,
-    this.isExpanded = false,
+    required this.level,
+    required this.isExpanded,
   });
 
   final Branch branch;
@@ -107,6 +107,7 @@ class _BranchWidgetState extends State<BranchWidget> {
                 return BranchWidget(
                   key: Key(branch.id.toString()),
                   branch: branch,
+                  isExpanded: branch.isExpanded,
                   level: widget.level + 1,
                 );
               }),
