@@ -9,12 +9,12 @@ class BranchWidget extends StatefulWidget {
     super.key,
     required this.branch,
     required this.level,
-    required this.isExpanded,
+    required this.query,
   });
 
   final Branch branch;
   final int level;
-  final bool isExpanded;
+  final String query;
 
   @override
   State<BranchWidget> createState() => _BranchWidgetState();
@@ -22,12 +22,13 @@ class BranchWidget extends StatefulWidget {
 
 class _BranchWidgetState extends State<BranchWidget> {
   late bool isExpanded;
-  late bool hasBranches;
+  late bool showExpandedButton;
 
   @override
   void initState() {
-    isExpanded = widget.isExpanded;
-    hasBranches = widget.branch.branches.isNotEmpty;
+    isExpanded = widget.query.isNotEmpty;
+    showExpandedButton =
+        widget.branch.branches.isNotEmpty && widget.query.isEmpty;
     super.initState();
   }
 
@@ -82,7 +83,7 @@ class _BranchWidgetState extends State<BranchWidget> {
                         ],
                       ),
                     ),
-                    if (hasBranches)
+                    if (showExpandedButton)
                       DecoratedBox(
                           decoration: BoxDecoration(
                               color: theme.colorScheme.primaryContainer,
@@ -97,18 +98,19 @@ class _BranchWidgetState extends State<BranchWidget> {
             ),
           ),
         ),
-        if (isExpanded && hasBranches)
+        if (isExpanded)
           ListView.builder(
               primary: false,
               shrinkWrap: true,
               itemCount: widget.branch.branches.length,
+              cacheExtent: 15.0,
               itemBuilder: (context, index) {
                 final branch = widget.branch.branches[index];
                 return BranchWidget(
                   key: Key(branch.id.toString()),
                   branch: branch,
-                  isExpanded: branch.isExpanded,
                   level: widget.level + 1,
+                  query: widget.query,
                 );
               }),
       ],

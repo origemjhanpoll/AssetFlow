@@ -17,33 +17,23 @@ class AssetsPage extends StatefulWidget {
 
 class _AssetsPageState extends State<AssetsPage> {
   late TreeBloc bloc;
-  late ScrollController scrollController;
+  late TextEditingController textEditingController;
   bool energySensorSelected = false;
   bool criticSelected = false;
   bool showSeachBar = false;
-  int page = 1;
 
   @override
   void initState() {
     bloc = di<TreeBloc>();
+    textEditingController = TextEditingController();
     bloc.add(TreeLoadedEvent(companyId: widget.companyId));
-    scrollController = ScrollController();
-    scrollController.addListener(_scrollListener);
     super.initState();
   }
 
   @override
   void dispose() {
     bloc.close();
-    scrollController.dispose();
     super.dispose();
-  }
-
-  void _scrollListener() {
-    if (scrollController.position.pixels ==
-        scrollController.position.maxScrollExtent) {
-      bloc.add(TreeLoadMoreEvent(page: page++));
-    }
   }
 
   @override
@@ -58,12 +48,10 @@ class _AssetsPageState extends State<AssetsPage> {
               ? Padding(
                   padding: const EdgeInsets.only(left: 12.0),
                   child: TextField(
+                    controller: textEditingController,
                     autofocus: true,
-                    onChanged: (value) {
-                      bloc.add(FilteredEvent(
-                        companyId: widget.companyId,
-                        query: value,
-                      ));
+                    onSubmitted: (value) {
+                      bloc.add(FilteredEvent(query: value));
                     },
                     decoration: InputDecoration(
                       constraints: const BoxConstraints.expand(height: 48.0),
@@ -89,9 +77,14 @@ class _AssetsPageState extends State<AssetsPage> {
                     theme.colorScheme.secondaryContainer),
               ),
               onPressed: () {
-                bloc.add(TreeLoadedEvent(companyId: widget.companyId));
                 setState(() {
                   showSeachBar = !showSeachBar;
+                  if (showSeachBar) {
+                    bloc.add(const FilteredEvent(query: ''));
+                  } else {
+                    textEditingController.clear();
+                    bloc.add(TreeLoadedEvent(companyId: widget.companyId));
+                  }
                 });
               },
               icon: Icon(showSeachBar ? Icons.close : Icons.search),
@@ -175,16 +168,16 @@ class _AssetsPageState extends State<AssetsPage> {
                     final branches = state.branches;
                     return Expanded(
                       child: ListView.builder(
-                          controller: scrollController,
                           shrinkWrap: true,
                           itemCount: branches.length,
+                          cacheExtent: 15.0,
                           itemBuilder: (context, index) {
                             final branch = branches[index];
                             return BranchWidget(
                               key: Key(branch.id.toString()),
                               branch: branch,
-                              isExpanded: branch.isExpanded,
                               level: branch.level,
+                              query: textEditingController.text,
                             );
                           }),
                     );

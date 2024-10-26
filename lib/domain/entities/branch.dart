@@ -14,7 +14,6 @@ class Branch extends Equatable {
   final BranchType branchType;
   final List<Branch> branches;
   final int level;
-  bool _expanded;
 
   Branch({
     required this.id,
@@ -28,8 +27,7 @@ class Branch extends Equatable {
     required this.branchType,
     this.level = 0,
     List<Branch>? branches,
-  })  : branches = branches ?? [],
-        _expanded = false;
+  }) : branches = branches ?? [];
 
   SensorType? get getSensorType {
     if (sensorType == 'energy') {
@@ -46,10 +44,6 @@ class Branch extends Equatable {
       return StatusType.operating;
     }
   }
-
-  bool get isExpanded => _expanded;
-
-  set expanded(bool value) => _expanded = value;
 
   factory Branch.fromJson(Map<String, dynamic> json) {
     return Branch(
