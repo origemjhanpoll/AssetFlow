@@ -1,13 +1,20 @@
 import 'package:asset_flow/domain/entities/branch.dart';
 import 'package:asset_flow/utils/types.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class BranchWidget extends StatefulWidget {
-  const BranchWidget({super.key, required this.branch, this.level = 0});
+  const BranchWidget({
+    super.key,
+    required this.branch,
+    required this.level,
+    required this.query,
+  });
 
   final Branch branch;
   final int level;
+  final String query;
 
   @override
   State<BranchWidget> createState() => _BranchWidgetState();
@@ -15,12 +22,13 @@ class BranchWidget extends StatefulWidget {
 
 class _BranchWidgetState extends State<BranchWidget> {
   late bool isExpanded;
-  late bool hasBranches;
+  late bool showExpandedButton;
 
   @override
   void initState() {
-    isExpanded = false;
-    hasBranches = widget.branch.branches.isNotEmpty;
+    isExpanded = widget.query.isNotEmpty;
+    showExpandedButton =
+        widget.branch.branches.isNotEmpty && widget.query.isEmpty;
     super.initState();
   }
 
@@ -30,6 +38,7 @@ class _BranchWidgetState extends State<BranchWidget> {
       children: [
         InkWell(
           onTap: () {
+            HapticFeedback.lightImpact();
             setState(() {
               isExpanded = !isExpanded;
             });
@@ -67,14 +76,14 @@ class _BranchWidgetState extends State<BranchWidget> {
                             ),
                           if (widget.branch.getStatusType == StatusType.alert)
                             const Icon(
-                              Icons.circle,
-                              size: 12.0,
+                              Icons.error,
+                              size: 18.0,
                               color: Colors.red,
                             ),
                         ],
                       ),
                     ),
-                    if (hasBranches)
+                    if (showExpandedButton)
                       DecoratedBox(
                           decoration: BoxDecoration(
                               color: theme.colorScheme.primaryContainer,
@@ -89,17 +98,19 @@ class _BranchWidgetState extends State<BranchWidget> {
             ),
           ),
         ),
-        if (isExpanded && hasBranches)
+        if (isExpanded)
           ListView.builder(
               primary: false,
               shrinkWrap: true,
               itemCount: widget.branch.branches.length,
+              cacheExtent: 15.0,
               itemBuilder: (context, index) {
                 final branch = widget.branch.branches[index];
                 return BranchWidget(
                   key: Key(branch.id.toString()),
                   branch: branch,
                   level: widget.level + 1,
+                  query: widget.query,
                 );
               }),
       ],

@@ -1,8 +1,15 @@
 import 'package:asset_flow/injection.dart' as di;
 import 'package:asset_flow/presentation/pages/companies_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 void main() async {
+  SystemChrome.setSystemUIOverlayStyle(
+    const SystemUiOverlayStyle(
+      statusBarColor: Colors.purple,
+      systemNavigationBarColor: Colors.purple,
+    ),
+  );
   WidgetsFlutterBinding.ensureInitialized();
   await di.init();
 

@@ -3,6 +3,7 @@ import 'package:asset_flow/presentation/bloc/tree_bloc.dart';
 import 'package:asset_flow/presentation/pages/assets_page.dart';
 import 'package:asset_flow/presentation/widgets/logo_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CompaniesPage extends StatefulWidget {
@@ -48,6 +49,7 @@ class _CompaniesPageState extends State<CompaniesPage> {
       body: SafeArea(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             ListTile(
               title: Text(
@@ -60,39 +62,46 @@ class _CompaniesPageState extends State<CompaniesPage> {
             BlocBuilder<TreeBloc, TreeState>(
               bloc: bloc,
               buildWhen: (previous, current) =>
-                  current is Loading || current is CompaniesLoaded,
+                  current is TreeLoading || current is CompaniesLoaded,
               builder: (context, state) {
-                if (state is Loading) {
+                if (state is TreeLoading) {
                   return const Center(
                     child: CircularProgressIndicator(),
                   );
                 } else if (state is CompaniesLoaded) {
                   final companies = state.companies;
                   return Expanded(
-                    child: ListView.builder(
+                    child: ListView.separated(
+                      separatorBuilder: (context, index) => const Divider(),
+                      shrinkWrap: false,
                       itemCount: companies.length,
                       itemBuilder: (context, index) {
                         final company = companies[index];
 
                         return ListTile(
                           onTap: () {
+                            HapticFeedback.lightImpact();
                             Navigator.of(context).push(MaterialPageRoute<void>(
                                 builder: (BuildContext context) => AssetsPage(
                                       companyId: company.id,
                                       companyName: company.name,
                                     )));
                           },
+                          leading: Icon(
+                            Icons.business,
+                            color: theme.colorScheme.primary,
+                          ),
                           title: Text(company.name,
                               style: theme.textTheme.titleMedium),
-                          subtitle: Text('${company.assetCount} ativos'),
                           trailing: Container(
                               height: 40.0,
                               width: 40.0,
-                              decoration:
-                                  BoxDecoration(color: theme.primaryColor),
+                              decoration: BoxDecoration(
+                                  color: theme.colorScheme.primaryContainer,
+                                  borderRadius: BorderRadius.circular(20.0)),
                               child: Icon(
                                 Icons.arrow_right_alt_outlined,
-                                color: theme.primaryColorLight,
+                                color: theme.primaryColor,
                               )),
                           contentPadding:
                               const EdgeInsets.symmetric(horizontal: 16.0),

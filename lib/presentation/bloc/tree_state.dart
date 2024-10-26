@@ -9,7 +9,9 @@ sealed class TreeState extends Equatable {
 
 final class TreeInitial extends TreeState {}
 
-final class Loading extends TreeState {}
+final class TreeLoading extends TreeState {}
+
+final class TreeEmpty extends TreeState {}
 
 final class CompaniesLoaded extends TreeState {
   final List<Company> companies;
@@ -25,4 +27,12 @@ final class TreeLoaded extends TreeState {
 
   @override
   List<Object> get props => [branches];
+}
+
+final class FilterLoaded extends TreeEvent {
+  final String query;
+  const FilterLoaded({required this.query});
+
+  @override
+  List<Object> get props => [query];
 }

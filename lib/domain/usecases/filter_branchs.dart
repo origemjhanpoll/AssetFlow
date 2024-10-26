@@ -1,12 +1,35 @@
 import 'package:asset_flow/domain/entities/branch.dart';
-import 'package:asset_flow/domain/repositories/i_assets_repository.dart';
 
 class FilterBranchs {
-  final IAssetsRepository repository;
+  Future<List<Branch>> call(
+      {required List<Branch> tree, required String query}) async {
+    List<Branch> filteredTree = [];
 
-  FilterBranchs(this.repository);
+    for (var branch in tree) {
+      var filteredBranch = _filterBranchRecursive(branch, query);
+      if (filteredBranch != null) {
+        filteredTree.add(filteredBranch);
+      }
+    }
 
-  Future<List<Branch>> call({required String companyId}) async {
-    return await repository.getAssets(companyId: companyId);
+    return filteredTree;
   }
+}
+
+Branch? _filterBranchRecursive(Branch branch, String query) {
+  bool matchesCurrent = branch.name.toLowerCase().contains(query.toLowerCase());
+
+  List<Branch> filteredChildren = [];
+  for (var child in branch.branches) {
+    var filteredChild = _filterBranchRecursive(child, query);
+    if (filteredChild != null) {
+      filteredChildren.add(filteredChild);
+    }
+  }
+
+  if (matchesCurrent || filteredChildren.isNotEmpty) {
+    return branch.copyWith(branches: filteredChildren);
+  }
+
+  return null;
 }

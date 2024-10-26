@@ -6,7 +6,7 @@
 import 'dart:async' as _i4;
 
 import 'package:asset_flow/data/datasources/remote_datasource.dart' as _i3;
-import 'package:flutter/services.dart' as _i2;
+import 'package:http/http.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 
 // ignore_for_file: type=lint
@@ -22,8 +22,8 @@ import 'package:mockito/mockito.dart' as _i1;
 // ignore_for_file: camel_case_types
 // ignore_for_file: subtype_of_sealed_class
 
-class _FakeAssetBundle_0 extends _i1.SmartFake implements _i2.AssetBundle {
-  _FakeAssetBundle_0(
+class _FakeClient_0 extends _i1.SmartFake implements _i2.Client {
+  _FakeClient_0(
     Object parent,
     Invocation parentInvocation,
   ) : super(
@@ -41,21 +41,20 @@ class MockRemoteDataSource extends _i1.Mock implements _i3.RemoteDataSource {
   }
 
   @override
-  _i2.AssetBundle get bundle => (super.noSuchMethod(
-        Invocation.getter(#bundle),
-        returnValue: _FakeAssetBundle_0(
+  _i2.Client get client => (super.noSuchMethod(
+        Invocation.getter(#client),
+        returnValue: _FakeClient_0(
           this,
-          Invocation.getter(#bundle),
+          Invocation.getter(#client),
         ),
-      ) as _i2.AssetBundle);
+      ) as _i2.Client);
 
   @override
-  _i4.Future<Map<String, dynamic>> getData() => (super.noSuchMethod(
+  _i4.Future<Map<String, dynamic>?> getData() => (super.noSuchMethod(
         Invocation.method(
           #getData,
           [],
         ),
-        returnValue:
-            _i4.Future<Map<String, dynamic>>.value(<String, dynamic>{}),
-      ) as _i4.Future<Map<String, dynamic>>);
+        returnValue: _i4.Future<Map<String, dynamic>?>.value(),
+      ) as _i4.Future<Map<String, dynamic>?>);
 }
