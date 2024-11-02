@@ -9,11 +9,13 @@ class BranchWidget extends StatefulWidget {
     super.key,
     required this.branch,
     required this.level,
+    required this.isExpanded,
     required this.query,
   });
 
   final Branch branch;
   final int level;
+  final bool isExpanded;
   final String query;
 
   @override
@@ -22,13 +24,12 @@ class BranchWidget extends StatefulWidget {
 
 class _BranchWidgetState extends State<BranchWidget> {
   late bool isExpanded;
-  late bool showExpandedButton;
+  late bool hasBranches;
 
   @override
   void initState() {
-    isExpanded = widget.query.isNotEmpty;
-    showExpandedButton =
-        widget.branch.branches.isNotEmpty && widget.query.isEmpty;
+    isExpanded = widget.isExpanded;
+    hasBranches = widget.branch.branches.isNotEmpty;
     super.initState();
   }
 
@@ -60,11 +61,15 @@ class _BranchWidgetState extends State<BranchWidget> {
                             child: Padding(
                               padding:
                                   const EdgeInsets.symmetric(horizontal: 4.0),
-                              child: Text(
-                                widget.branch.name,
+                              child: RichText(
+                                text: TextSpan(
+                                  children: _getHighlightedText(
+                                    name: widget.branch.name,
+                                    query: widget.query,
+                                    theme: theme,
+                                  ),
+                                ),
                                 overflow: TextOverflow.ellipsis,
-                                style: theme.textTheme.bodyLarge!
-                                    .copyWith(fontSize: 18),
                               ),
                             ),
                           ),
@@ -83,7 +88,7 @@ class _BranchWidgetState extends State<BranchWidget> {
                         ],
                       ),
                     ),
-                    if (showExpandedButton)
+                    if (hasBranches)
                       DecoratedBox(
                           decoration: BoxDecoration(
                               color: theme.colorScheme.primaryContainer,
@@ -98,19 +103,19 @@ class _BranchWidgetState extends State<BranchWidget> {
             ),
           ),
         ),
-        if (isExpanded)
+        if (isExpanded && hasBranches)
           ListView.builder(
               primary: false,
               shrinkWrap: true,
               itemCount: widget.branch.branches.length,
-              cacheExtent: 15.0,
               itemBuilder: (context, index) {
                 final branch = widget.branch.branches[index];
                 return BranchWidget(
                   key: Key(branch.id.toString()),
                   branch: branch,
+                  isExpanded: branch.isExpanded,
                   level: widget.level + 1,
-                  query: widget.query,
+                  query: '',
                 );
               }),
       ],
@@ -118,6 +123,45 @@ class _BranchWidgetState extends State<BranchWidget> {
   }
 
   ThemeData get theme => Theme.of(context);
+}
+
+List<TextSpan> _getHighlightedText({
+  required String name,
+  required String query,
+  required ThemeData theme,
+}) {
+  final regex = RegExp(query, caseSensitive: false);
+  final matches = regex.allMatches(name);
+  List<TextSpan> textSpans = [];
+  int lastMatchEnd = 0;
+
+  for (final match in matches) {
+    if (match.start > lastMatchEnd) {
+      textSpans.add(TextSpan(
+        text: name.substring(lastMatchEnd, match.start),
+        style: theme.textTheme.bodyLarge!.copyWith(fontSize: 18),
+      ));
+    }
+
+    textSpans.add(TextSpan(
+      text: match.group(0),
+      style: theme.textTheme.bodyLarge!.copyWith(
+        fontSize: 18,
+        background: Paint()..color = theme.colorScheme.primaryFixedDim,
+      ),
+    ));
+
+    lastMatchEnd = match.end;
+  }
+
+  if (lastMatchEnd < name.length) {
+    textSpans.add(TextSpan(
+      text: name.substring(lastMatchEnd),
+      style: theme.textTheme.bodyLarge!.copyWith(fontSize: 18),
+    ));
+  }
+
+  return textSpans;
 }
 
 String assetType(BranchType type) {

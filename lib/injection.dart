@@ -20,7 +20,7 @@ Future<void> init() async {
   );
   di.registerLazySingleton(() => GetCompanies(di<IAssetsRepository>()));
   di.registerLazySingleton(() => GetTree(di<IAssetsRepository>()));
-  di.registerLazySingleton(() => FilterBranchs());
+  di.registerLazySingleton(() => FilterBranchs(di<IAssetsRepository>()));
 
   di.registerFactory<TreeBloc>(
     () => TreeBloc(

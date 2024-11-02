@@ -15,7 +15,6 @@ class TreeBloc extends Bloc<TreeEvent, TreeState> {
   final GetTree getTree;
   final FilterBranchs filterBranchs;
 
-  List<Branch> tree = [];
   List<Branch> branches = [];
 
   TreeBloc({
@@ -44,29 +43,9 @@ class TreeBloc extends Bloc<TreeEvent, TreeState> {
   void _treeLoadedEvent(TreeLoadedEvent event, Emitter<TreeState> emit) async {
     emit(TreeLoading());
     try {
-      tree = await getTree(companyId: event.companyId);
-      if (tree.isNotEmpty) {
-        emit(TreeLoaded(branches: tree));
-      } else {
-        emit(TreeEmpty());
-      }
-    } catch (e, s) {
-      debugPrint('Erro: $e');
-      debugPrint('Stack trace: $s');
-    }
-  }
-
-  void _filteredEvent(FilteredEvent event, Emitter<TreeState> emit) async {
-    try {
-      if (event.query.length > 2) {
-        final resultFilter =
-            await filterBranchs(query: event.query, tree: tree);
-
-        if (resultFilter.isEmpty) {
-          emit(TreeEmpty());
-        } else {
-          emit(TreeLoaded(branches: resultFilter));
-        }
+      branches = await getTree(companyId: event.companyId);
+      if (branches.isNotEmpty) {
+        add(const TreeLoadMoreEvent(page: 1));
       } else {
         emit(TreeEmpty());
       }
@@ -80,18 +59,41 @@ class TreeBloc extends Bloc<TreeEvent, TreeState> {
       TreeLoadMoreEvent event, Emitter<TreeState> emit) async {
     emit(TreeLoading());
     try {
-      const int incrementSize = 30;
-      int startIndex = incrementSize * event.page;
-      int endIndex = startIndex + incrementSize;
-      endIndex = endIndex > tree.length ? tree.length : endIndex;
-      branches = tree.sublist(0, endIndex);
-      // final updateBranches =
-      //     await updateTree(branches: branches, tree: tree, page: event.page);
-
-      emit(TreeLoaded(branches: branches));
+      int skip = branches.length < 30 ? branches.length : 30 * event.page;
+      final branchesCurrent = branches.sublist(0, skip);
+      emit(TreeLoaded(branches: branchesCurrent));
     } catch (e, s) {
       debugPrint('Erro: $e');
       debugPrint('Stack trace: $s');
     }
+  }
+
+  void _filteredEvent(FilteredEvent event, Emitter<TreeState> emit) async {
+    // try {
+    //   if (event.query.length >= 2) {
+    //     emit(TreeLoading());
+    //     branchs = await filterBranchs(
+    //       query: event.query,
+    //       companyId: event.companyId,
+    //     );
+
+    //     if (branchs.isEmpty) {
+    //       print('2');
+
+    //       emit(TreeEmpty());
+    //     } else {
+    //       print('3');
+
+    //       emit(TreeLoaded(branches: branchs));
+    //     }
+    //   } else {
+    //     print('4');
+
+    //     emit(TreeEmpty());
+    //   }
+    // } catch (e, s) {
+    //   debugPrint('Erro: $e');
+    //   debugPrint('Stack trace: $s');
+    // }
   }
 }

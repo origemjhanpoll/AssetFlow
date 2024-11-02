@@ -178,6 +178,7 @@ class _AssetsPageState extends State<AssetsPage> {
                               branch: branch,
                               level: branch.level,
                               query: textEditingController.text,
+                              isExpanded: false,
                             );
                           }),
                     );
